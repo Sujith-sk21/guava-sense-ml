@@ -197,8 +197,7 @@ def preprocess_image(image_data):
 def extract_features(image):
     try:
         all_features = extractor.extract_all_features(image)
-        selected = all_features[selected_features]
-        return selected.reshape(1, -1)
+        return all_features.reshape(1, -1)
     except Exception as e:
         raise ValueError(f"Error extracting features: {str(e)}")
 
