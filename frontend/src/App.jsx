@@ -4,20 +4,20 @@ import "./App.css";
 
 function App() {
   useEffect(() => {
-  const audio = document.getElementById("bg-music");
+    const audio = document.getElementById("bg-music");
 
-  const playMusic = () => {
-    audio.volume = 0.4; // 🔊 louder sound (40%)
-    audio.play().catch(() => {});
-    document.removeEventListener("click", playMusic);
-  };
+    const playMusic = () => {
+      audio.volume = 0.4;
+      audio.play().catch(() => {});
+      document.removeEventListener("click", playMusic);
+    };
 
-  document.addEventListener("click", playMusic);
+    document.addEventListener("click", playMusic);
 
-  return () => {
-    document.removeEventListener("click", playMusic);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("click", playMusic);
+    };
+  }, []);
 
   const [musicOn, setMusicOn] = useState(false);
   const [image, setImage] = useState(null);
@@ -42,16 +42,18 @@ function App() {
 
     try {
       const res = await axios.post(
-        "https://guava-sense-ml.onrender.com/predict",
+        "https://guava-sense-ml.onrender.com/predict", // ✅ FIXED API
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+
+      // ✅ FIXED RESPONSE FORMAT
       setResult(
-        `${res.data.prediction.class} (${(
-          res.data.prediction.confidence * 100
-        ).toFixed(2)}% confidence)`
+        `${res.data.class} (${(res.data.confidence * 100).toFixed(
+          2
+        )}% confidence)`
       );
     } catch (err) {
       console.error(err);
@@ -63,48 +65,45 @@ function App() {
 
   return (
     <div className="app-container">
-      <audio
-  id="bg-music"
-  src="/ambient.mp3"
-  loop
-/>
+      <audio id="bg-music" src="/ambient.mp3" loop />
 
       <video className="bg-video" autoPlay muted loop>
-  <source src="/nature3.mp4" type="video/mp4" />
-</video>
-
-
-
+        <source src="/nature3.mp4" type="video/mp4" />
+      </video>
 
       <nav className="navbar">
-        <div className="logo" style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-  <span><i className="fa fa-leaf"></i> GuavaSense</span>
+        <div
+          className="logo"
+          style={{ display: "flex", gap: "15px", alignItems: "center" }}
+        >
+          <span>
+            <i className="fa fa-leaf"></i> GuavaSense
+          </span>
 
-  <button
-    onClick={() => {
-      const audio = document.getElementById("bg-music");
-      if (!musicOn) {
-        audio.volume = 0.15;
-        audio.play();
-      } else {
-        audio.pause();
-      }
-      setMusicOn(!musicOn);
-    }}
-    style={{
-      background: "rgba(255,255,255,0.15)",
-      border: "none",
-      borderRadius: "20px",
-      padding: "6px 12px",
-      color: "white",
-      cursor: "pointer",
-      fontSize: "0.8rem"
-    }}
-  >
-    {musicOn ? "🔊 Music On" : "🔈 Music Off"}
-  </button>
-</div>
-
+          <button
+            onClick={() => {
+              const audio = document.getElementById("bg-music");
+              if (!musicOn) {
+                audio.volume = 0.15;
+                audio.play();
+              } else {
+                audio.pause();
+              }
+              setMusicOn(!musicOn);
+            }}
+            style={{
+              background: "rgba(255,255,255,0.15)",
+              border: "none",
+              borderRadius: "20px",
+              padding: "6px 12px",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "0.8rem",
+            }}
+          >
+            {musicOn ? "🔊 Music On" : "🔈 Music Off"}
+          </button>
+        </div>
       </nav>
 
       <main className="main-section">
@@ -133,40 +132,33 @@ function App() {
 
           {loading && <div className="spinner"></div>}
 
-{result && (
-  <div className="result">
-    <strong>Prediction Result:</strong> {result}
-  </div>
-)}
-
+          {result && (
+            <div className="result">
+              <strong>Prediction Result:</strong> {result}
+            </div>
+          )}
         </div>
 
         <div className="image-section">
-  {preview && (
-    <img src={preview} alt="Preview" className="leaf-preview" />
-  )}
-</div>
-
+          {preview && (
+            <img src={preview} alt="Preview" className="leaf-preview" />
+          )}
+        </div>
       </main>
 
-      {/* About the Project Section */}
       <section className="about-section">
         <h2>About the Project</h2>
         <p>
-          Hi this is Sujithkumar S (22BCT0040) and V Gokulakrishnan (22BCE3752){" "}
+          Hi this is Sujithkumar S (22BCT0040) and V Gokulakrishnan (22BCE3752)
           <br />
           Together, we built this Guava Plant Disease Detection system to help
           farmers and plant enthusiasts quickly identify diseases in guava
           leaves. Simply upload a guava leaf image, and our AI-powered system
           will detect whether it is Healthy or affected by diseases such as
           Canker, Leaf Spot, Mummification, or Rust, and show the confidence
-          percentage for the prediction. Our goal is to provide a simple, fast,
-          and reliable tool that can help monitor plant health and support timely
-          intervention to protect guava crops.
+          percentage for the prediction.
         </p>
       </section>
-
-      
     </div>
   );
 }
